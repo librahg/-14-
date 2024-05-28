@@ -135,21 +135,21 @@ class HouseBuilderFacade: # 하나의 메서드로 복잡한 집 생성 인터�
 
 def search_house(condition, house_list):
     from collections import Counter
-    
-    def is_condition_met(condition, house):
-        counter_condition = Counter(condition)
-        counter_house = Counter(house)
-        
-        for element in counter_condition:
-            if counter_condition[element] < counter_house[element]:
+
+    def is_condition_met(condition_counter, house_counter):
+        for part, count in condition_counter.items():
+            if house_counter[part] < count:
                 return False
         return True
-    
+
     search_result = []
+    condition_counter = Counter(str(part) for part in condition)
+    
     for house in house_list:
-        flattened_house = [part for floor in house.floors for part in floor.parts]
+        flattened_house_parts = [str(part) for floor in house.floors for part in floor.parts]
+        house_counter = Counter(flattened_house_parts)
         
-        if is_condition_met(condition, flattened_house):
+        if is_condition_met(condition_counter, house_counter):
             search_result.append(house)
     
     return search_result
